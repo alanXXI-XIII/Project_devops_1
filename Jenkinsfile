@@ -4,14 +4,12 @@ pipeline {
         stage('Build Docker image') {
             agent {
                 docker {
-                    image 'docker:24.0.5' // Official Docker CLI image
-                    args '-v /var/run/docker.sock:/var/run/docker.sock'
+                    image 'docker:24.0.5-dind' // Docker-in-Docker image
+                    args '--privileged -v /var/run/docker.sock:/var/run/docker.sock'
                 }
             }
             steps {
-                script {
-                    docker.build("testapp:latest")
-                }
+                sh 'docker build -t testapp:latest .'
             }
         }
     }
